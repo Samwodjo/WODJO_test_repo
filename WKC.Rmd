@@ -92,7 +92,7 @@ for var in mat_cont_vars:
     plt.show()
 ')
 ```
-The histogram appears to be right-skewed, with a significant peak around 120 mmHg. This suggests that a large number of individuals have a systolic blood pressure close to this value.
+The histogram appears to be right-skewed, with a significant peak around 120 mmHg. This suggests that a large number of individuals have a systolic blood pressure close to this value. The histogram shows a bimodal distribution, with two noticeable peaks: one around 80 mmHg and another around 60 mmHg. This indicates that there are two groups of individuals with different diastolic blood pressure levels.The histogram shows a right-skewed distribution, with a prominent peak around 7 to 8. This indicates that most individuals in the dataset have blood sugar levels concentrated in this range. The histogram displays a strong peak at 98°F, indicating that this is the most common body temperature among the individuals in the dataset.
 
 # Question 4a.	Data visualization using R
 ```{r}
@@ -193,36 +193,35 @@ install.packages("car")
 install.packages("carData ")
 library(car)
 library(carData)
-
+```
 
 ```{r}
 vif(residual)
 ```
 
 ```{r}
-residual<-stepwisemodel$residuals
-plot(dd$Age,residual)
-```
-```{r}
-residual<-stepwisemodel$residuals
-plot(dd$SystolicBP,residual)
+residual<-stepwise_model$residuals
+plot(mat_data$Age,residual)
 ```
 
 ```{r}
-residual<-stepwisemodel$residuals
-plot(dd$DiastolicBP,residual)
+residual<-stepwise_model$residuals
+plot(mat_data$SystolicBP,residual)
 ```
 
 ```{r}
-residual<-stepwisemodel$residuals
-plot(dd$BodyTemp,residual)
+residual<-stepwise_model$residuals
+plot(mat_data$DiastolicBP,residual)
 ```
 
 ```{r}
-plot(stepwisemodel,which=1,col=c("blue"))
+residual<-stepwise_model$residuals
+plot(mat_data$BodyTemp,residual)
 ```
 
-
+```{r}
+plot(stepwise_model,which=1,col=c("blue"))
+```
 
 
 ```{r}
@@ -250,7 +249,7 @@ plot(residual)
 from the residual plot above,it appears the residuals are homoscedastic, but we need to confirm this by conducting the BRUESCH PAGAN test. 
 
 ```{r}
-bptest(stepwisemodel)
+bptest(stepwise_model)
 ```
 Ho: homoscedastic
 H1:heteroscedastic
@@ -259,7 +258,7 @@ since our p-value(0.04686) is less than an alpha value of 0.05,we reject the nul
 
 ##Residual test of independence
 ```{r}
-dwtest(stepwisemodel)
+dwtest(stepwise_model)
 ```
 Ho:there is no residual autocorrelation 
 H1:there is residual autocorrelation
