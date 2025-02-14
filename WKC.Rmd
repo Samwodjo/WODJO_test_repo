@@ -1,0 +1,145 @@
+---
+title: "Our mini project WKC"
+author: "Chidimma"
+date: "2025-02-13"
+output: html_document
+---
+
+# loading relevant libraries
+```{r}
+library(dplyr)
+library(ggplot2)
+library(car)
+library(MASS)
+```
+
+
+```{r}
+mat_data <- read.csv("C:\\Users\\user\\Downloads\\Re_ WASHA Takwimu mini project\\Maternal Health Risk Data Set.csv")
+```
+ 
+# Some data wrangling
+```{r}
+head(mat_data)
+
+# subsetting with filter
+filter(mat_data, RiskLevel == 'high risk')
+
+# Selecting columns with select
+##mat_data2 <- select(mat_data, Age, DiastolicBP, RiskLevel)
+##filter(mat_data2, Age <= 20 )
+
+# summarize data
+mat_data %>% summarize(avg = mean(Age))
+mat_data %>% summarize(avg = median(DiastolicBP))
+```
+
+# Question 1: Group the data by risk level (i) Mean age per risk level - descending)
+```{r}
+mat_data %>% 
+  group_by(RiskLevel) %>% 
+  summarise(Mean_Age = mean(Age, na.rm = TRUE)) %>% 
+  arrange(desc(Mean_Age))
+```
+
+# Q1(ii) Median diastiolic per risk level (ascending)
+```{r}
+mat_data %>% 
+  group_by(RiskLevel) %>% 
+  summarise(Median_Diastolic = median(DiastolicBP, na.rm = TRUE)) %>% 
+  arrange(Median_Diastolic)
+```
+
+# Question 2.	Create a new variable name it systolic rate
+```{r}
+mat_data <- mat_data %>% mutate(SystolicRate = SystolicBP / Age)
+head(mat_data)
+```
+# Question	3.	Filter participants of age <= 40 years
+```{r}
+mat_data %>% filter(Age <= 40) %>%
+  group_by(RiskLevel) %>%
+  summarise(Mean_SystolicRate = mean(SystolicRate, na.rm = TRUE))
+
+```
+
+# Question 4a.	Data visualization
+```{r}
+mat_cont_vars <- c("SystolicBP", "DiastolicBP", "BS", "BodyTemp", "HeartRate")
+for (var in mat_cont_vars) {
+  print(ggplot(mat_data, aes(x = .data[[var]])) + 
+          geom_histogram(fill = "blue", color = "black", bins = 30) + 
+          ggtitle(paste("Histogram of", var)))
+   print(ggplot(mat_data, aes(x = RiskLevel, y = .data[[var]])) + 
+          geom_boxplot(fill = "orange") + 
+          ggtitle(paste("Boxplot of", var, "by Risk Level")))
+}
+```
+
+
+# Question 4b. Summary Statistics
+```{r}
+# summary grouped by risk level
+ mat_data %>%
+  group_by(RiskLevel) %>% 
+  summarise(across(all_of(mat_vars), 
+                   list(Min = min, 
+                        Q1 = ~quantile(.x, 0.25, na.rm = TRUE), 
+                        Median = median, 
+                        Q3 = ~quantile(.x, 0.75, na.rm = TRUE), 
+                        Max = max), 
+                   .names = "{.col}_{.fn}"))
+## how can we rearrange the table
+```
+
+# Question 5.	Exploring relationships between Heart Rate and other variables
+```{r}
+plot_list <- list(
+  ggplot(mat_data, aes(x = Age, y = HeartRate)) + 
+    geom_point() + 
+    geom_smooth(method = "lm", col = "red") + 
+    ggtitle("Heart Rate vs Age"),
+  
+  ggplot(mat_data, aes(x = SystolicBP, y = HeartRate)) + 
+    geom_point() + 
+    geom_smooth(method = "lm", col = "red") + 
+    ggtitle("Heart Rate vs Systolic BP"),
+  
+  ggplot(mat_data, aes(x = DiastolicBP, y = HeartRate)) + 
+    geom_point() + 
+    geom_smooth(method = "lm", col = "red") + 
+    ggtitle("Heart Rate vs Diastolic BP"),
+  
+  ggplot(mat_data, aes(x = BodyTemp, y = HeartRate)) + 
+    geom_point() + 
+    geom_smooth(method = "lm", col = "red") + 
+    ggtitle("Heart Rate vs Body Temperature")
+)
+
+# Print scatter plots
+lapply(plot_list, print)
+```
+
+# Question 5b.	Simple linear regression model
+```{r}
+slm_model <- lm(HeartRate ~ Age + SystolicBP + DiastolicBP + BodyTemp, data = mat_data)
+summary(slm_model)
+```
+
+# Question 6. Multiple Linear Regression with Stepwise Selection
+```{r}
+full_model <- lm(HeartRate ~ Age + SystolicBP + DiastolicBP + BodyTemp, data = mat_data)
+stepwise_model <- stepAIC(full_model, direction = "both")
+summary(stepwise_model)
+```
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
