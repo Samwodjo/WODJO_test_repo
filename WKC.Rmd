@@ -183,14 +183,125 @@ stepwise_model <- stepAIC(full_model, direction = "both")
 #summary(full_model)
 summary(stepwise_model)
 ```
-## R Markdown
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
-```{r cars}
 
+
+
+
+
+
+
+
+
+
+
+
+##Residual analysis
+
+
+```{r}
+install.packages("car")
+install.packages("carData ")
+library(car)
+library(carData)
+
+
+```{r}
+vif(residual)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+```{r}
+residual<-stepwisemodel$residuals
+plot(dd$Age,residual)
+```
+```{r}
+residual<-stepwisemodel$residuals
+plot(dd$SystolicBP,residual)
+```
+
+```{r}
+residual<-stepwisemodel$residuals
+plot(dd$DiastolicBP,residual)
+```
+
+```{r}
+residual<-stepwisemodel$residuals
+plot(dd$BodyTemp,residual)
+```
+
+```{r}
+plot(stepwisemodel,which=1,col=c("blue"))
+```
+
+
+
+
+```{r}
+plot(residual)
+```
+
+
+```{r}
+t.test(residual)
+```
+Ho:residual mean is equal to zero
+H1:residual mean is not equal to zero.
+since our p-value of 1 is greater than our alpha value of 0.05, we fail to reject the null hypothesis and conclude that the residual mean is equal to zero. 
+
+
+```{r}
+library(lmtest)
+```
+
+###Test of constant variance
+
+```{r}
+plot(residual)
+```
+from the residual plot above,it appears the residuals are homoscedastic, but we need to confirm this by conducting the BRUESCH PAGAN test. 
+
+```{r}
+bptest(stepwisemodel)
+```
+Ho: homoscedastic
+H1:heteroscedastic
+since our p-value(0.04686) is less than an alpha value of 0.05,we reject the null hypothesis and conclude that there is heteroscedasticity.
+
+
+##Residual test of independence
+```{r}
+dwtest(stepwisemodel)
+```
+
+Ho:there is no residual autocorrelation 
+H1:there is residual autocorrelation
+since our p-value(0.9476) is greater than an alpha value of 0.05,we fail to reject the null hypothesis and conclude that there is no autocorrelation among the residuals.
+we will however proceed to plot the autocorrelation function (acf) to confirm.
+
+
+```{r}
+acf(residual)
+```
+
+## test of normality of residuals.
+
+```{r}
+hist(residual)
+```
+from the histogram, it is not show clear whether the residuals are normally distributed or not, so we proceed to conduct the shapiro test of normality.
+
+```{r}
+shapiro.test(residual)
+```
+
+Ho:residuals are normally distributed
+H1: residuals are not normally distributed
+
+since the p-value (2.2e^-16) is less the (alpha=0.05),we reject the Ho and conclude that the residuals are not normally distributed. 
+
+
+
+
+
