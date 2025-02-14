@@ -11,6 +11,7 @@ library(dplyr)
 library(ggplot2)
 library(car)
 library(MASS)
+library(reticulate)
 ```
 
 
@@ -63,7 +64,35 @@ mat_data %>% filter(Age <= 40) %>%
 
 ```
 
-# Question 4a.	Data visualization
+# Question 4a.	Data visualization using python
+```{r}
+use_python("C:\\Users\\user\\anaconda3\\conda-meta\\python-3.12.7-h14ffc60_0.json")
+py_run_string("""
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+mat_data = pd.read_csv("C:\\Users\\user\\Downloads\\Re_ WASHA Takwimu mini project\\Maternal Health Risk Data Set.csv"))
+mat_cont_vars = ['SystolicBP', 'DiastolicBP', 'BS', 'BodyTemp', 'HeartRate']
+
+# Histograms
+for var in continuous_vars:
+    plt.figure()
+    sns.histplot(data[var], bins=30, kde=True, color='blue')
+    plt.title(f'Histogram of {var}')
+    plt.show()
+
+# Boxplots
+for var in continuous_vars:
+    plt.figure()
+    sns.boxplot(x=data['RiskLevel'], y=data[var], palette='orange')
+    plt.title(f'Boxplot of {var} by Risk Level')
+    plt.show()
+""")
+```
+
+
+# Question 4a.	Data visualization using R
 ```{r}
 mat_cont_vars <- c("SystolicBP", "DiastolicBP", "BS", "BodyTemp", "HeartRate")
 for (var in mat_cont_vars) {
