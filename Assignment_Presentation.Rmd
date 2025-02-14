@@ -1,0 +1,363 @@
+---
+title: "group assignment"
+author: "sammy, Joseph, Chiomma"
+date: "2025-02-14"
+output:  html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+# GROUP EXCELLENCE
+
+### Knowing my current working directory
+
+```{r}
+getwd()
+
+```
+### Setting up seed to avoid the reassignment of random numbers so we get a consistent result after every successful exercution of code.
+```{r}
+set.seed(255)
+
+```
+
+###uploading csv file as dd
+```{r}
+attach(Maternal_Health_Risk_Data_Set_Copy)
+```
+### Getting to know the kind of data we are working with.
+```{r}
+summary(Maternal_Health_Risk_Data_Set_Copy)
+
+```
+
+### Assigning the name _dd_ to our dataset so we can easily call them during coding
+```{r}
+dd <- Maternal_Health_Risk_Data_Set_Copy
+dd
+
+```
+```{r}
+summary(dd)
+```
+
+
+##(i)	Find the mean age of each risk level and arranging the results in descending order
+
+```{r}
+q <- dd %>% group_by(RiskLevel) %>% summarise(mean_age = mean(Age)) 
+
+```
+### Then we use the arranging in descending order code.
+```{r}
+#q_in_desc <- q %>% arrange(desc(mean_age))
+```
+
+
+###Using the pipe to get a straight result, we have;
+
+```{r}
+dd %>% group_by(RiskLevel) %>% summarise(mean_age = mean(Age)) %>% arrange(desc(mean_age))
+```
+
+
+##(ii)	Find the median diastolic of each risk level and order them in ascending order. 
+
+
+```{r}
+dd %>% group_by(RiskLevel) %>% summarise(median_DiastolicBP = median(DiastolicBP) ) %>% arrange(median_DiastolicBP)
+
+
+```
+and order them in ascending order. 
+
+
+```{r}
+#dd %>% group_by([,cRiskLevel) %>% summarise(median_DiastolicBP = median() )
+```
+```{r}
+
+```
+## 2.	Create a new variable name it systolic rate. Where systolic rate = systolic BP/age
+
+```{r}
+dd_1 <- mutate(dd, systolic_rate = SystolicBP/Age)
+dd_1
+```
+
+#  3.	Filter participants of age <= 40 years, determine average systolic rate for each risk level
+
+```{r}
+dd_1 %>% filter(Age <= 40, ) %>% group_by(RiskLevel) %>% 
+  summarise(avg_systolic = mean(systolic_rate))
+
+```
+
+## 4.	For each continuous variable in the dataset, create histograms and box plots, and provide insights on the data distribution. Additionally, calculate the five-number summary for each variable, grouped by risk level.
+
+# Question 4b. Summary Statistics
+```{r}
+# summary grouped by risk level
+ dd %>%
+  group_by(RiskLevel) %>% 
+  summarise(across(all_of(dd), 
+                   list(Min = min, 
+                        Q1 = ~quantile(.x, 0.25), 
+                        Median = median, 
+                        Q3 = ~quantile(.x, 0.75), 
+                        Max = max), 
+                   .names = "{.col}_{.fn}"))
+## how can we rearrange the table
+```
+
+
+```{r}
+names(dd)
+```
+
+```{r}
+# Load necessary libraries
+library(ggplot2)
+library(dplyr)
+
+```
+
+
+```{r}
+#hist(dd$Age)
+```
+```{r}
+hist(dd$SystolicBP)
+```
+```{r}
+hist(dd$DiastolicBP)
+```
+```{r}
+hist(dd$BS)
+```
+
+```{r}
+hist(dd$BodyTemp)
+```
+```{r}
+hist(dd$HeartRate)
+```
+# box plot
+```{r}
+boxplot(HeartRate~BodyTemp)
+```
+```{r}
+boxplot(HeartRate~BS)
+```
+```{r}
+boxplot(DiastolicBP~BS)
+```
+```{r}
+boxplot(HeartRate~BodyTemp)
+```
+
+
+
+
+##5.	A) Explore the relationship between heart rate and the following variables using suitable graphical methods:
+(i) Age
+(ii) Systolic blood pressure
+(iii) Diastolic blood pressure
+(iv) Body temperature
+Provide comments on your observations.
+
+
+## Explore the relationship between heart rate and the following variables using suitable graphical methods
+
+```{r}
+plot(Age, HeartRate)
+```
+```{r}
+plot(HeartRate~SystolicBP)
+```
+
+```{r}
+plot(HeartRate~DiastolicBP)
+```
+```{r}
+plot(HeartRate~BodyTemp)
+```
+##B) Based on the results from A) fit a simple linear model using heart rate as a response variable and the variables in A as predictor variables. Interpret your results.
+
+
+```{r}
+MODEL1<-lm(HeartRate~Age)
+summary(MODEL1)
+```
+
+
+```{r}
+MODEL2<-lm(HeartRate~SystolicBP)
+summary(MODEL2)
+```
+```{r}
+MODEL3<-lm(HeartRate~DiastolicBP)
+summary(MODEL3)
+```
+```{r}
+MODEL4<-lm(HeartRate~BodyTemp)
+summary(MODEL4)
+```
+
+```{r}
+MODEL5<-lm(HeartRate~Age+SystolicBP+DiastolicBP+BodyTemp  )
+summary(MODEL5)
+``` 
+
+```{r}
+names(dd)
+```
+
+
+```{r}
+
+fitall<-lm(HeartRate~ Age + SystolicBP + DiastolicBP + BodyTemp ,data=dd)
+summary(fitall)
+```
+
+```{r}
+fitstart<-lm(HeartRate~1, data=dd)
+summary(fitstart)
+```
+```{r}
+stepwisemodel<-step(fitall,direction = "both")
+summary(stepwisemodel)
+```
+
+
+
+
+
+##Residual analysis
+
+
+```{r}
+install.packages("car")
+install.packages("carData ")
+library(car)
+library(carData)
+
+
+```{r}
+vif(residual)
+```
+
+```{r}
+residual<-stepwisemodel$residuals
+plot(dd$Age,residual)
+```
+```{r}
+residual<-stepwisemodel$residuals
+plot(dd$SystolicBP,residual)
+```
+
+```{r}
+residual<-stepwisemodel$residuals
+plot(dd$DiastolicBP,residual)
+```
+
+```{r}
+residual<-stepwisemodel$residuals
+plot(dd$BodyTemp,residual)
+```
+
+```{r}
+plot(stepwisemodel,which=1,col=c("blue"))
+```
+
+
+
+
+```{r}
+plot(residual)
+```
+
+
+```{r}
+t.test(residual)
+```
+Ho:residual mean is equal to zero
+H1:residual mean is not equal to zero.
+since our p-value of 1 is greater than our alpha value of 0.05, we fail to reject the null hypothesis and conclude that the residual mean is equal to zero. 
+
+
+```{r}
+library(lmtest)
+```
+
+###Test of constant variance
+
+```{r}
+plot(residual)
+```
+from the residual plot above,it appears the residuals are homoscedastic, but we need to confirm this by conducting the BRUESCH PAGAN test. 
+
+```{r}
+bptest(stepwisemodel)
+```
+Ho: homoscedastic
+H1:heteroscedastic
+since our p-value(0.04686) is less than an alpha value of 0.05,we reject the null hypothesis and conclude that there is heteroscedasticity.
+
+
+##Residual test of independence
+```{r}
+dwtest(stepwisemodel)
+```
+Ho:there is no residual autocorrelation 
+H1:there is residual autocorrelation
+since our p-value(0.9476) is greater than an alpha value of 0.05,we fail to reject the null hypothesis and conclude that there is no autocorrelation among the residuals.
+we will however proceed to plot the autocorrelation function (acf) to confirm.
+
+
+```{r}
+acf(residual)
+```
+
+## test of normality of residuals.
+
+```{r}
+hist(residual)
+```
+from the histogram, it is not show clear whether the residuals are normally distributed or not, so we proceed to conduct the shapiro test of normality.
+
+```{r}
+shapiro.test(residual)
+```
+
+Ho:residuals are normally distributed
+H1: residuals are not normally distributed
+
+since the p-value (2.2e^-16) is less the (alpha=0.05),we reject the Ho and conclude that the residuals are not normally distributed. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
