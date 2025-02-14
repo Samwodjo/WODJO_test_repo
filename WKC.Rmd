@@ -27,7 +27,8 @@ head(mat_data)
 filter(mat_data, RiskLevel == 'high risk')
 
 # Selecting columns with select
-##mat_data2 <- select(mat_data, Age, DiastolicBP, RiskLevel)
+#mat_data2 <- select(mat_data, Age, DiastolicBP, RiskLevel)
+#head(mat_data2)
 ##filter(mat_data2, Age <= 20 )
 
 # summarize data
@@ -66,42 +67,44 @@ mat_data %>% filter(Age <= 40) %>%
 
 # Question 4a.	Data visualization using python
 ```{r}
-use_python("C:\\Users\\user\\anaconda3\\conda-meta\\python-3.12.7-h14ffc60_0.json")
-py_run_string("""
+#use_python("C:\\Users\\user\\anaconda3\\conda-meta\\python-3.12.7-h14ffc60_0.json")
+use_python("C:/Users/user/anaconda3/python.exe", required = TRUE)
+py_run_string('
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-mat_data = pd.read_csv("C:\\Users\\user\\Downloads\\Re_ WASHA Takwimu mini project\\Maternal Health Risk Data Set.csv"))
-mat_cont_vars = ['SystolicBP', 'DiastolicBP', 'BS', 'BodyTemp', 'HeartRate']
+mat_data2 = pd.read_csv("C:/Users/user/Downloads/Re_ WASHA Takwimu mini project/Maternal Health Risk Data Set.csv")
+mat_cont_vars = ["SystolicBP", "DiastolicBP", "BS", "BodyTemp", "HeartRate"]
 
 # Histograms
-for var in continuous_vars:
+for var in mat_cont_vars:
     plt.figure()
-    sns.histplot(data[var], bins=30, kde=True, color='blue')
-    plt.title(f'Histogram of {var}')
+    sns.histplot(mat_data2[var], bins=30, kde=True, color="blue")
+    plt.title(f"Histogram of {var}")
     plt.show()
 
 # Boxplots
-for var in continuous_vars:
+for var in mat_cont_vars:
     plt.figure()
-    sns.boxplot(x=data['RiskLevel'], y=data[var], palette='orange')
-    plt.title(f'Boxplot of {var} by Risk Level')
+    sns.boxplot(x=mat_data2["RiskLevel"], y=mat_data2[var], palette="deep")
+    plt.title(f"Boxplot of {var} by Risk Level")
     plt.show()
-""")
+')
 ```
 
 
 # Question 4a.	Data visualization using R
 ```{r}
+#hist(mat_data$DiastolicBP)
 mat_cont_vars <- c("SystolicBP", "DiastolicBP", "BS", "BodyTemp", "HeartRate")
 for (var in mat_cont_vars) {
-  print(ggplot(mat_data, aes(x = .data[[var]])) + 
-          geom_histogram(fill = "blue", color = "black", bins = 30) + 
-          ggtitle(paste("Histogram of", var)))
-   print(ggplot(mat_data, aes(x = RiskLevel, y = .data[[var]])) + 
-          geom_boxplot(fill = "orange") + 
-          ggtitle(paste("Boxplot of", var, "by Risk Level")))
+print(ggplot(mat_data, aes(x = .data[[var]])) + 
+       geom_histogram(fill = "blue", color = "black", bins = 30) + 
+       ggtitle(paste("Histogram of", var)))
+ print(ggplot(mat_data, aes(x = RiskLevel, y = .data[[var]])) + 
+       geom_boxplot(fill = "orange") + 
+        ggtitle(paste("Boxplot of", var, "by Risk Level")))
 }
 ```
 
@@ -146,7 +149,23 @@ plot_list <- list(
 )
 
 # Print scatter plots
-lapply(plot_list, print)
+walk(plot_list, print)
+```
+
+
+```{r}
+names(mat_data)
+```
+
+```{r}
+slm_model1 <- lm(HeartRate ~ Age, data = mat_data)
+summary(slm_model1)
+slm_model2 <- lm(HeartRate ~ SystolicBP, data = mat_data)
+summary(slm_model2)
+slm_model3 <- lm(HeartRate ~ DiastolicBP, data = mat_data)
+summary(slm_model3)
+slm_model4 <- lm(HeartRate ~ BodyTemp, data = mat_data)
+summary(slm_model4)
 ```
 
 # Question 5b.	Simple linear regression model
@@ -157,8 +176,11 @@ summary(slm_model)
 
 # Question 6. Multiple Linear Regression with Stepwise Selection
 ```{r}
-full_model <- lm(HeartRate ~ Age + SystolicBP + DiastolicBP + BodyTemp, data = mat_data)
+#full_model <- lm(HeartRate ~ Age + SystolicBP + DiastolicBP + BodyTemp, data = mat_data)
+#fitstart <- lm(HeartRate~1, data=mat_data)
 stepwise_model <- stepAIC(full_model, direction = "both")
+#summary(fitstart)
+#summary(full_model)
 summary(stepwise_model)
 ```
 ## R Markdown
