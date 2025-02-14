@@ -1,6 +1,6 @@
 ---
 title: "Our mini project WKC"
-author: "Chidimma"
+author: "Wodjo, Kalong, Chidimma"
 date: "2025-02-13"
 output: html_document
 ---
@@ -92,7 +92,7 @@ for var in mat_cont_vars:
     plt.show()
 ')
 ```
-
+The histogram appears to be right-skewed, with a significant peak around 120 mmHg. This suggests that a large number of individuals have a systolic blood pressure close to this value.
 
 # Question 4a.	Data visualization using R
 ```{r}
@@ -185,19 +185,6 @@ summary(stepwise_model)
 ```
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 ##Residual analysis
 
 
@@ -274,7 +261,6 @@ since our p-value(0.04686) is less than an alpha value of 0.05,we reject the nul
 ```{r}
 dwtest(stepwisemodel)
 ```
-
 Ho:there is no residual autocorrelation 
 H1:there is residual autocorrelation
 since our p-value(0.9476) is greater than an alpha value of 0.05,we fail to reject the null hypothesis and conclude that there is no autocorrelation among the residuals.
