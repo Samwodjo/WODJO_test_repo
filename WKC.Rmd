@@ -92,7 +92,15 @@ for var in mat_cont_vars:
     plt.show()
 ')
 ```
-The histogram appears to be right-skewed, with a significant peak around 120 mmHg. This suggests that a large number of individuals have a systolic blood pressure close to this value. The histogram shows a bimodal distribution, with two noticeable peaks: one around 80 mmHg and another around 60 mmHg. This indicates that there are two groups of individuals with different diastolic blood pressure levels.The histogram shows a right-skewed distribution, with a prominent peak around 7 to 8. This indicates that most individuals in the dataset have blood sugar levels concentrated in this range. The histogram displays a strong peak at 98°F, indicating that this is the most common body temperature among the individuals in the dataset. The histogram exhibits a bimodal distribution with two prominent peaks: one around 60 beats per minute (bpm) and another around 80 bpm. This suggests that there are two distinct groups within the population regarding heart rate.
+For systolic:  The histogram appears to be right-skewed, with a significant peak around 120 mmHg. This suggests that a large number of individuals have a systolic blood pressure close to this value. 
+
+For Diastolic: The histogram shows a bimodal distribution, with two noticeable peaks: one around 80 mmHg and another around 60 mmHg. This indicates that there are two groups of individuals with different diastolic blood pressure levels.
+
+For BS: The histogram shows a right-skewed distribution, with a prominent peak around 7 to 8. This indicates that most individuals in the dataset have blood sugar levels concentrated in this range. 
+
+For BodyTemp: The histogram displays a strong peak at 98°F, indicating that this is the most common body temperature among the individuals in the dataset. 
+
+For heart rate: The histogram exhibits a bimodal distribution with two prominent peaks: one around 60 beats per minute (bpm) and another around 80 bpm. This suggests that there are two distinct groups within the population regarding heart rate.
 
 The box for the high-risk group indicates a higher median systolic blood pressure, with a median around 140 mmHg. The interquartile range (IQR) suggests that the majority of values are concentrated between approximately 130 mmHg and 150 mmHg.The clear distinction in medians and variability across the groups underscores the importance of monitoring blood pressure in assessing cardiovascular health.
 
